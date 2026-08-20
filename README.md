@@ -40,7 +40,20 @@ _(being built - will update as features are added)_
 
 ## Project structure
 
-_(being built - will update as features are added)_
+```
+src/
+    features/
+        user/
+        menu/
+        cart/
+        order/
+    ui/             ← reusable UI components
+    services/       ← API interaction
+    utils/          ← pure helper functions
+    App.jsx
+    main.jsx
+    index.css
+```
 
 ## Possible imporvements
 
