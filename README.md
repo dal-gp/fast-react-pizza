@@ -7,7 +7,8 @@ data loading, Redux Toolkit, and Tailwind CSS.
 
 ## What it does
 
-_(being built - will update as features are added)_
+- Pizza menu loaded from the API and displayed on /menu
+- App layout with comnpany name header and cart overview on every page
 
 **Planned features:**
 
@@ -36,7 +37,16 @@ npm run dev
 
 ## What I learned
 
-_(being built - will update as features are added)_
+**React Router loaders** - this was the first genuinely new concept in this
+section. Instead of fetching data inside a useEffect after the component mounts,
+you define a `loader` function and attach it to the route. React Router them
+fetches the data at the same time as it starts rendering the route - so by the
+time the conponent renders, the data is already there. No loading spinner in the
+component, no useEffect, no stale state. You read the data with `useLoaderData()`
+and React Router automatically knows which loader to use based on which route
+rendered the component. The convention is to co-locate the loader in the same
+file as the page it serves and reanme it on import in App.jsx
+(`loader as menuLoader`) since every page exports a function called `loader`.
 
 ## Project structure
 
