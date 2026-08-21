@@ -6,6 +6,7 @@ import Cart from "./features/cart/Cart";
 import CreateOrder from "./features/order/CreateOrder";
 import Order from "./features/order/Order";
 import AppLayout from "./ui/AppLayout";
+import Error from "./ui/Error";
 
 /**
  * Router defined outside App - created once, not on every render.
@@ -15,6 +16,7 @@ import AppLayout from "./ui/AppLayout";
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
+    errorElement: <Error />, // fallback - catches 404s and unexpected errors
     children: [
       {
         path: "/",
@@ -24,6 +26,7 @@ const router = createBrowserRouter([
         path: "/menu",
         element: <Menu />,
         loader: menuLoader, // Step 2: connect loader to route
+        errorElement: <Error />, // catches loader errors within the layout
       },
       {
         path: "/cart",

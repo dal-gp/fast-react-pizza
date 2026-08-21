@@ -10,7 +10,7 @@ import Loader from "./Loader";
  */
 function AppLayout() {
   /**
-   * useNavigation (NOT useNavigate) - returns global router navigation state.
+   * useNavigation (NOT useNav, main, gate) - returns global router navigation state.
    * state: 'idle' | 'loading' | 'submitting'
    * 'loading' = any route's loader is currenly running
    */
