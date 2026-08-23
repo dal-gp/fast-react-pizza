@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, redirect } from "react-router-dom";
+import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 
 // https://uibakery.io/regex-library/phone-number
@@ -37,6 +37,22 @@ function CreateOrder() {
   // const [withPriority, setWithPriority] = useState(false);
   const cart = fakeCart;
 
+  /**
+   * navigation.state: "idel" | "loading" | "submitting"
+   * "submitting" = form is being proccessed by the action
+   */
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+
+  /**
+   * useActionData: returns whatever the action returned.
+   * undefined on first render (no submission yet).
+   * errors object if action returned errors.
+   * undefined again after a successful redirect.
+   * @type {{phone?: string} | undefined }
+   */
+  const formErrors = useActionData();
+
   return (
     <div>
       <h2>Ready to order? Let's go!</h2>
@@ -56,6 +72,8 @@ function CreateOrder() {
           <label>Phone number</label>
           <div>
             <input type="tel" name="phone" required />
+            {/* Optional chaining - formErrors is undefined on first render */}
+            {formErrors?.phone && <p>{formErrors.phone}</p>}
           </div>
         </div>
 
@@ -84,7 +102,11 @@ function CreateOrder() {
            * JSON.stringify required - form data must be a string.
            */}
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <button>Order now</button>
+
+          {/* Disabled during submission - prevents double-submit */}
+          <button disabled={isSubmitting}>
+            {isSubmitting ? "Processing order..." : "Order now"}
+          </button>
         </div>
       </Form>
     </div>
@@ -119,6 +141,20 @@ export async function action({ request }) {
     priority: data.priority === "on",
     cart: JSON.parse(data.cart),
   };
+
+  /**
+   * Validation before creating order.
+   * Return errors object to stay on the form - NOT redirect, NOT createOrder.
+   * Returning data keeps the user on the page with inline error messages.
+   * Throwing would trigger errorElement (full page replacement - wrong UX).
+   */
+  const errors = {};
+  if (!isValidPhone(data.phone)) {
+    errors.phone =
+      "Please give us your correct phone number. We might need it to contact you.";
+  }
+  if (Object.keys(errors).length > 0) return errors; // exit early with errors
+  // Only reaches here if validation passed
 
   // Submit order to the API - response contains the new order with its
   // server assigned ID
