@@ -8,7 +8,10 @@ data loading, Redux Toolkit, and Tailwind CSS.
 ## What it does
 
 - Pizza menu loaded from the API and displayed on /menu
-- App layout with comnpany name header and cart overview on every page
+- App layout with company name header and cart overview on every page
+- Search any order by ID from the header - works from any page
+- Create a new order by filling in name, phone, address and selecting priority
+- After placing an order, immediately redirected to the order confirmation page
 
 **Planned features:**
 
@@ -47,6 +50,19 @@ and React Router automatically knows which loader to use based on which route
 rendered the component. The convention is to co-locate the loader in the same
 file as the page it serves and reanme it on import in App.jsx
 (`loader as menuLoader`) since every page exports a function called `loader`.
+
+**React Router actions** - the counterpart to loaders. WHere loaders read data,
+actions write it. You replace the HTML `<form>` with React Router's
+`<Form method="POST">`, export an `action` function from the page file, and
+write it to the route. The action receives the submitted data via
+`request.formData()` - two lines that always go together:
+`const formData = await request.formData()` and
+`const data = Object.fromEntries(formData)`. Non-form data (like the cart from
+Redux) goes in a hidden input as JSON. After the action completes, you redirect
+using `redirect()` from react-router-dom - you can't use `useNavigation` in an
+action because it's a hook and hooks only work in components. The nicest thing
+about this approach: no `onSubmit`, no `useState` for inputs, no loading state -
+React Router handles it all.
 
 ## Project structure
 
