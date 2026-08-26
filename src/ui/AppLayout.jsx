@@ -18,13 +18,29 @@ function AppLayout() {
   const isLoading = navigation.state === "loading";
   // console.log(navigation);
   return (
-    <div>
+    /**
+     * 3-row grid layout:
+     *   row 1 (auto) → Header takes only what it needs
+     *   row 2 (1fr) → scrollable content area fills remaining space
+     *   row 3 (auto) → CartOverview pinned to bottom
+     * h-screen → fills full viewport height (100vh)
+     */
+    <div className="grid h-screen grid-rows-[auto_1fr_auto]">
       {/* Loader overlays the entire page - Header, main, and CartOverview still visible */}
       {isLoading && <Loader />}
       <Header />
-      <main>
-        <Outlet />
-      </main>
+      {/**
+        * Wrapper div needed because mx-auto doesnot center grid items
+      directly.
+        * overflow-scroll: content scrolls within this area -
+      CartOverview stays pinned.
+        * No spacing here - each page component
+      controls its own top/botto margin. */}
+      <div className="overflow-scroll">
+        <main className="mx-auto max-w-3xl">
+          <Outlet />
+        </main>
+      </div>
       <CartOverview />
     </div>
   );
