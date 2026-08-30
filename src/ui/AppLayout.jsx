@@ -27,8 +27,7 @@ function AppLayout() {
      */
     <div className="grid h-screen grid-rows-[auto_1fr_auto]">
       {/* Loader overlays the entire page - Header, main, and CartOverview still visible */}
-      {/* {isLoading && <Loader />} */}
-      {true && <Loader />}
+      {isLoading && <Loader />}
       <Header />
       {/**
         * Wrapper div needed because mx-auto doesnot center grid items
