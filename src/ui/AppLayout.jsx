@@ -23,9 +23,9 @@ function AppLayout() {
      *   row 1 (auto) → Header takes only what it needs
      *   row 2 (1fr) → scrollable content area fills remaining space
      *   row 3 (auto) → CartOverview pinned to bottom
-     * h-screen → fills full viewport height (100vh)
+     * h-dvh = dynamic viewport innerHeight, fixes mobile browser address bar issue
      */
-    <div className="grid h-screen grid-rows-[auto_1fr_auto]">
+    <div className="grid h-dvh grid-rows-[auto_1fr_auto]">
       {/* Loader overlays the entire page - Header, main, and CartOverview still visible */}
       {isLoading && <Loader />}
       <Header />
