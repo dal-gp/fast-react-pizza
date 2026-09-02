@@ -106,7 +106,7 @@ function CreateOrder() {
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
 
           {/* Disabled during submission - prevents double-submit */}
-          <Button disabled={isSubmitting}>
+          <Button type="primary" disabled={isSubmitting}>
             {isSubmitting ? "Processing order..." : "Order now"}
           </Button>
         </div>
