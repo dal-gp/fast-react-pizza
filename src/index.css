@@ -2,7 +2,7 @@
 
 @theme {
   /* Overrides Tailwind's default font-sans with Roboto Mono */
-  --font-sans: "Roboto Mono, monospace";
+  --font-sans: "Roboto Mono", monospace;
 }
 
 @layer components {
