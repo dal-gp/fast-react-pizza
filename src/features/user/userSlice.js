@@ -1,3 +1,6 @@
+import { createSlice } from "@reduxjs/toolkit";
+
+/*
 function getPosition() {
   return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -19,3 +22,26 @@ async function fetchAddress() {
   // 3) Then we return an object with the data that we are interested in
   return { position, address };
 }
+*/
+const initialState = {
+  username: "", // empty unti user enters name on Homepage
+};
+
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    /**
+     * Updates the stored username.
+     * RTK allows direct state mutation - Immer handles immutability behind
+     * the scenes.
+     * @param {string} action.payload - The new username
+     */
+    updateName(state, action) {
+      state.username = action.payload;
+    },
+  },
+});
+
+export const { updateName } = userSlice.actions; // action creators
+export default userSlice.reducer; // for configureStore
