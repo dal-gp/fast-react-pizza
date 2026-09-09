@@ -6,7 +6,15 @@ const initialState = {
    * Don't store: total cart price, item count - derive those with selectors.
    * Do store: totalPrice per item - synced inreducers so it's always correct.
    */
-  cart: [],
+  cart: [
+    {
+      pizzaId: 12,
+      name: "Mediterranean",
+      quantity: 2,
+      unitPrice: 16,
+      totalPrice: 32,
+    },
+  ],
 };
 
 const cartSlice = createSlice({
