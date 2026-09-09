@@ -3,14 +3,16 @@ import { Link } from "react-router-dom";
 /**
  * Reusable styled button.
  * Renders as <Link> when `to` prop is provided (e.g. "Order pizzas" -> /order/new).
- * Renders as <button> otherwise.
+ * Render as a plain clickable button when `onClick` is provided.
+ * Renders as plain <button> otherwise.
  *
- * @param {React.ReactNode} children
- * @param {boolean} disabled - passed to button element
+ * @param {React.ReactNode} children - Button label or content
+ * @param {boolean} disabled - Disables the button when true
  * @param {string} [to] - if provided, renders as Link
- * @param {string} type - type of button to display
+ * @param {string} type - Style variant: "primary" | "secondary" | "small"
+ * @param {Function} [onClick] - Click event handler (renders as button, not Link)
  */
-function Button({ children, disabled, to, type }) {
+function Button({ children, disabled, to, type, onClick }) {
   /**
    * Base: styles common to ALL button variants.
    * Each variant adds its own padding and text size on top of base.
@@ -30,6 +32,13 @@ function Button({ children, disabled, to, type }) {
       <Link to={to} className={styles[type]}>
         {children}
       </Link>
+    );
+
+  if (onClick)
+    return (
+      <button onClick={onClick} disabled={disabled} className={styles[type]}>
+        {children}
+      </button>
     );
 
   return (
