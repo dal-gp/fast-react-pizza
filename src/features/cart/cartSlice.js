@@ -6,15 +6,7 @@ const initialState = {
    * Don't store: total cart price, item count - derive those with selectors.
    * Do store: totalPrice per item - synced inreducers so it's always correct.
    */
-  cart: [
-    {
-      pizzaId: 12,
-      name: "Mediterranean",
-      quantity: 2,
-      unitPrice: 16,
-      totalPrice: 32,
-    },
-  ],
+  cart: [],
 };
 
 const cartSlice = createSlice({
@@ -84,3 +76,20 @@ export const {
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
+
+/**
+ * Selectors - co-located in slice file so any component can import and reuse.
+ * Convention: prefix with 'get'.
+ *
+ * Note: state.cart.cart because:
+ *  state.cart = the cart slice (name: "cart" in configureStore)
+ *  state.cart.cart = the cart array property in initialState
+ */
+
+/** Total number of pizza items across all cart entries */
+export const getTotalCartQuantity = (state) =>
+  state.cart.cart.reduce((sum, item) => sum + item.quantity, 0);
+
+/** Total price of all items in the cart */
+export const getTotalCartPrice = (state) =>
+  state.cart.cart.reduce((sum, item) => sum + item.totalPrice, 0);
