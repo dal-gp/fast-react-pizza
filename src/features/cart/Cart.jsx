@@ -2,35 +2,25 @@ import { Link } from "react-router-dom";
 import LinkButton from "../../ui/LinkButton";
 import Button from "../../ui/Button";
 import CartItem from "./CartItem";
-import { useSelector } from "react-redux";
-
-const fakeCart = [
-  {
-    pizzaId: 12,
-    name: "Mediterranean",
-    quantity: 2,
-    unitPrice: 16,
-    totalPrice: 32,
-  },
-  {
-    pizzaId: 6,
-    name: "Vegetale",
-    quantity: 1,
-    unitPrice: 13,
-    totalPrice: 13,
-  },
-  {
-    pizzaId: 11,
-    name: "Spinach and Mushroom",
-    quantity: 1,
-    unitPrice: 15,
-    totalPrice: 15,
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { getUsername } from "../user/userSlice";
+import { clearCart, getCart } from "./cartSlice";
+import EmptyCart from "./EmptyCart";
 
 function Cart() {
-  const cart = fakeCart;
-  const username = useSelector((state) => state.user.username);
+  /**
+   * getCart selector reads state.cart.cart from Redux.
+   * Replaces the fakeCart array that was here before.
+   */
+  const cart = useSelector(getCart);
+  /**
+   * getUsername selector reads state.user.username from Redux.
+   */
+  const username = useSelector(getUsername);
+  const dispatch = useDispatch();
+
+  // Show empty state if cart has no item
+  if (!cart.length) return <EmptyCart />;
 
   return (
     <div className="px-4 py-3">
@@ -47,7 +37,13 @@ function Cart() {
         <Button type="primary" to="/order/new">
           Order pizzas
         </Button>
-        <Button type="secondary">Clear cart</Button>
+        {/**
+         * Inline dispatch - no handler function needed for a simple one-liner.
+         * clearCart() creates the action object, dispatch sends it to the store.
+         */}
+        <Button type="secondary" onClick={() => dispatch(clearCart())}>
+          Clear cart
+        </Button>
       </div>
     </div>
   );
