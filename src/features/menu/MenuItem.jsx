@@ -1,11 +1,18 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Button from "../../ui/Button";
 import { formatCurrency } from "../../utils/helpers";
-import { addItem } from "../cart/cartSlice";
+import { addItem, getCurrentQuantityById } from "../cart/cartSlice";
+import DeleteItem from "../cart/DeleteItem";
 function MenuItem({ pizza }) {
   const { id, name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
-
   const dispatch = useDispatch();
+
+  /**
+   * Curried selector: getCurrentQuantityById(id) returns a selector
+   * that useSelector then calls with state.
+   */
+  const currentQuantity = useSelector(getCurrentQuantityById(id));
+  const isInCart = currentQuantity > 0;
 
   /**
    * Builds a cart item object and dispatches addItem.
@@ -13,7 +20,6 @@ function MenuItem({ pizza }) {
    * totalPrice = unitPrice * 1 = unitPrice (synced in reducers on qty change).
    */
   function handleAddToCart() {
-    console.log(id);
     const newItem = {
       pizzaId: id,
       name,
@@ -49,7 +55,10 @@ function MenuItem({ pizza }) {
               Sold out
             </p>
           )}
-          {!soldOut && (
+          {/* Show Delete if pizza is in cart  */}
+          {isInCart && <DeleteItem type="small" pizzaId={id} />}
+          {/* Show Add to cart only if not sold out AND not already in cart */}
+          {!soldOut && !isInCart && (
             <Button type="small" onClick={handleAddToCart}>
               Add to cart
             </Button>
