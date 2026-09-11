@@ -93,3 +93,6 @@ export const getTotalCartQuantity = (state) =>
 /** Total price of all items in the cart */
 export const getTotalCartPrice = (state) =>
   state.cart.cart.reduce((sum, item) => sum + item.totalPrice, 0);
+
+/** The raw cart array */
+export const getCart = (state) => state.cart.cart;

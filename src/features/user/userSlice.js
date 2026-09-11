@@ -24,7 +24,7 @@ async function fetchAddress() {
 }
 */
 const initialState = {
-  username: "", // empty unti user enters name on Homepage
+  username: "", // empty until user enters name on Homepage
 };
 
 const userSlice = createSlice({
@@ -45,3 +45,15 @@ const userSlice = createSlice({
 
 export const { updateName } = userSlice.actions; // action creators
 export default userSlice.reducer; // for configureStore
+
+/**
+ * Selectors - co-located in slice file so any component can import and reuse.
+ * Convention: prefix with 'get'.
+ *
+ * Note: state.user.username because:
+ *  state.user = the user slice (name: "user" in configureStore)
+ *  state.user.username = the username property in initialState
+ */
+
+/** The username */
+export const getUsername = (state) => state.user.username;
