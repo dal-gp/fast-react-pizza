@@ -96,3 +96,15 @@ export const getTotalCartPrice = (state) =>
 
 /** The raw cart array */
 export const getCart = (state) => state.cart.cart;
+
+/**
+ * Returns a selector function that finds the quantity of a specific pizza in the cart.
+ * Curried so we can pass the id before useSeletor calls it with state.
+ *
+ * Usage: useSelector(getCurrentQuantityById(pizzaId))
+ *
+ * @param {number} id - pizzaId to look up
+ * @returns {Function} selector: (state) => quantity | 0
+ */
+export const getCurrentQuantityById = (id) => (state) =>
+  state.cart.cart.find((item) => item.pizzaId === id)?.quantity ?? 0;
