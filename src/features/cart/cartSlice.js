@@ -49,7 +49,8 @@ const cartSlice = createSlice({
 
     /**
      * Decrease quantity of the cart by 1.
-     * Syncs totalprice in the same operation.
+     * Syncs totalPrice in the same operation.
+     * auto-delete when quantity hits 0.
      *
      * @param {Object} state - The current state
      * @param {number} action.payload - pizzaId of the item to decrement
@@ -57,6 +58,12 @@ const cartSlice = createSlice({
     decreaseItemQuantity(state, action) {
       const item = state.cart.find((item) => item.pizzaId === action.payload);
       item.quantity--;
+      /**
+       * When quantity reaches 0, remove the item entirely.
+       * Reuses deleteItem reducer via cartSlice.casereducers - no code duplication
+       * cartSlice.caseReducers gives direct access to other reducers in the slice.
+       */
+      if (item.quantity === 0) cartSlice.caseReducers.deleteItem(state, action);
       item.totalPrice = item.quantity * item.unitPrice;
     },
 
