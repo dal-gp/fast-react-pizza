@@ -1,8 +1,12 @@
-import { useState } from "react";
 import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 import Button from "../../ui/Button";
 import { useSelector } from "react-redux";
+import { clearCart, getCart, getTotalCartPrice } from "../cart/cartSlice";
+import EmptyCart from "../cart/EmptyCart";
+import store from "../../store";
+import { formatCurrency } from "../../utils/helpers";
+import { useState } from "react";
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
@@ -10,34 +14,9 @@ const isValidPhone = (str) =>
     str,
   );
 
-// Temporary - will come from Redux later
-const fakeCart = [
-  {
-    pizzaId: 12,
-    name: "Mediterranean",
-    quantity: 2,
-    unitPrice: 16,
-    totalPrice: 32,
-  },
-  {
-    pizzaId: 6,
-    name: "Vegetale",
-    quantity: 1,
-    unitPrice: 13,
-    totalPrice: 13,
-  },
-  {
-    pizzaId: 11,
-    name: "Spinach and Mushroom",
-    quantity: 1,
-    unitPrice: 15,
-    totalPrice: 15,
-  },
-];
-
 function CreateOrder() {
-  // const [withPriority, setWithPriority] = useState(false);
-  const cart = fakeCart;
+  const [withPriority, setWithPriority] = useState(false);
+  const cart = useSelector(getCart);
 
   /**
    * navigation.state: "idel" | "loading" | "submitting"
@@ -56,6 +35,15 @@ function CreateOrder() {
   const formErrors = useActionData();
 
   const username = useSelector((state) => state.user.username);
+
+  /** Total cart price from Redux - used to calculate priority surcharge */
+  const totalCartPrice = useSelector(getTotalCartPrice);
+  /** Priority adds 20% on top of cart total */
+  const priorityPrice = withPriority ? totalCartPrice * 0.2 : 0;
+  const totalPrice = totalCartPrice + priorityPrice;
+
+  // Don't show order form if cart is empty
+  if (!cart.length) return <EmptyCart />;
 
   return (
     <div className="px-4 py-6">
@@ -113,8 +101,12 @@ function CreateOrder() {
             type="checkbox"
             name="priority"
             id="priority"
-            // value={withPriority}
-            // onChange={(e) => setWithPriority(e.target.checked)}
+            /**
+             * Controlled checkbox - value is true/false not "on".
+             * action must check data.priority === "true" not "on".
+             */
+            value={withPriority}
+            onChange={(e) => setWithPriority(e.target.checked)}
             className="h-6 w-6 accent-yellow-400 focus:ring focus:ring-yellow-400 focus:ring-offset-2 focus:outline-none"
           />
           <label className="font-medium" htmlFor="priority">
@@ -132,7 +124,9 @@ function CreateOrder() {
 
           {/* Disabled during submission - prevents double-submit */}
           <Button type="primary" disabled={isSubmitting}>
-            {isSubmitting ? "Processing order..." : "Order now"}
+            {isSubmitting
+              ? "Processing order..."
+              : `Order now from ${formatCurrency(totalPrice)}`}
           </Button>
         </div>
       </Form>
@@ -165,7 +159,11 @@ export async function action({ request }) {
    */
   const order = {
     ...data,
-    priority: data.priority === "on",
+    /**
+     * Checkbox is now controlled (true/false) not HTML default ("on").
+     * Must check for "true" string because form data is always strings.
+     */
+    priority: data.priority === "true",
     cart: JSON.parse(data.cart),
   };
 
@@ -186,7 +184,13 @@ export async function action({ request }) {
   // Submit order to the API - response contains the new order with its
   // server assigned ID
   const newOrder = await createOrder(order);
-  console.log(newOrder);
+
+  /**
+   * Dispatch clearCart directly on the store - cannot use useDispatch here.
+   * useDispatch is a hook, only works in conponents.
+   * store.dispathc() is the workaround - use sparingly (disables some Redux optimisations).
+   */
+  store.dispatch(clearCart());
 
   // Redirect to the order confirmation page using the new ID
   // Cannot use useNavigation here - it's a hook, only works in components
