@@ -13,15 +13,21 @@ data loading, Redux Toolkit, and Tailwind CSS.
 - Create a new order by filling in name, phone, address and selecting priority
 - After placing an order, immediately redirected to the order confirmation page
 
-**Planned features:**
+**The full flow:**
 
 - Enter your name to start ordering (no accounts needed)
-- Browse the pizza menu loaded from an API
-- Add pizzas to a cart, adjust quantities
-- Place an order with name, phone and address
-- Optional GPS location for easier delivery
+- Browse the full pizza menu loaded from the API
+- Add pizzas to a cart, adjust quantities with +/- buttons
+- Delete individual pizzas or clear the entire cart
+- Cart overview visible on every page showing item count and total price
+- Place an order with name, phone, and address
 - Mark an order as priority (+20% cost) before or after placing it
 - Look up any existing order by its unique ID
+- Optional GPS location for easier delivery
+
+**Planned features:**
+
+- Optional GPS location for easier delivery
 
 ## How to run it
 
